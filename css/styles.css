@@ -1,0 +1,72 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --yellow: goldenRod;
+  --yellow-active: rgb(253, 227, 77);
+  --blue: darkblue;
+  --blue-active: rgb(10, 121, 249);
+  --red: darkred;
+  --red-active: rgb(255, 0, 0);
+  --green: darkgreen;
+  --green-active: rgb(0, 255, 0);
+  --button-color: ;
+}
+
+body {
+  margin: 0;
+  background-color: #333;
+}
+
+.simon-container {
+  display: grid;
+  grid-template-columns: repeat(2, 50px);
+  justify-content: center;
+  align-content: center;
+  gap: 1rem;
+  height: 200px;
+  background-color: #212121;
+}
+
+.simon-box {
+  width: 50px;
+  height: 50px;
+  background-color: var(--button-color);
+}
+
+.yellow {
+  --button-color: var(--yellow);
+}
+
+.yellow--active {
+  --button-color: var(--yellow-active);
+  box-shadow: 0 0 10px var(--button-color);
+}
+
+.blue {
+  --button-color: var(--blue);
+}
+
+.blue--active {
+  --button-color: var(--blue-active);
+  box-shadow: 0 0 10px var(--button-color);
+}
+
+.red {
+  --button-color: var(--red);
+}
+
+.red--active {
+  --button-color: var(--red-active);
+  box-shadow: 0 0 10px var(--button-color);
+}
+
+.green {
+  --button-color: var(--green);
+}
+
+.green--active {
+  --button-color: var(--green-active);
+  box-shadow: 0 0 10px var(--button-color);
+}
