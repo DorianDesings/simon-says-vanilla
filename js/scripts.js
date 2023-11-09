@@ -1,24 +1,41 @@
 const simonContainerElement = document.getElementById('simon-container');
+const gameContainerElement = document.getElementById('game');
+const buttonStartElement = document.getElementById('button-start');
+const simonBoxesElements = document.querySelectorAll('.simon-box');
+const noteDoElement = document.getElementById('note-do');
+const noteReElement = document.getElementById('note-re');
+const noteMiElement = document.getElementById('note-mi');
+const noteFaElement = document.getElementById('note-fa');
 const roundElement = document.getElementById('round');
 const colors = ['yellow', 'blue', 'red', 'green'];
 
 const buttonRefs = {
-  yellow: 0,
-  blue: 1,
-  red: 2,
-  green: 3
+  yellow: {
+    position: 0,
+    audio: noteDoElement
+  },
+  blue: {
+    position: 1,
+    audio: noteReElement
+  },
+  red: {
+    position: 2,
+    audio: noteMiElement
+  },
+  green: {
+    position: 3,
+    audio: noteFaElement
+  }
 };
 
 let intervalId;
 let sequencie = [];
-let sequencieTime = 500;
-let sequencieLength = 1;
-let playerTurn = false;
 let playerSequecie = [];
-let playerSequecieCounter = 0;
+let sequencieTime = 500;
+let playerTurn = false;
 let round = 1;
 
-function areArraysEqual(array1, array2) {
+const areArraysEqual = (array1, array2) => {
   // Comprueba si las longitudes de los dos arrays son iguales
   if (array1.length !== array2.length) {
     return false;
@@ -33,7 +50,7 @@ function areArraysEqual(array1, array2) {
 
   // Si todos los elementos coinciden, los arrays son iguales
   return true;
-}
+};
 
 const resetValues = () => {
   if (intervalId) {
@@ -42,49 +59,57 @@ const resetValues = () => {
   intervalId = undefined;
   sequencie = [];
   playerSequecie = [];
-  playerSequecieCounter = 0;
+  playerTurn = false;
 };
 
 const printRound = () => {
   roundElement.textContent = 'Round: ' + round;
 };
 
-const activeButton = button => {
-  playerTurn = false;
-  const currentChildren = simonContainerElement.children[buttonRefs[button]];
-  let pulses = 0;
-  if (intervalId) {
-    clearInterval(intervalId);
+const playButtonSound = color => {
+  buttonRefs[color].audio.currentTime = 0;
+  buttonRefs[color].audio.play();
+};
+
+const iluminateButton = color => {
+  const currentPosition = buttonRefs[color].position;
+  const currentChildren = simonBoxesElements[currentPosition];
+  playButtonSound(color);
+  currentChildren.classList.add(`${color}--active`);
+  const timeoutId = setTimeout(() => {
+    currentChildren.classList.remove(`${color}--active`);
+    clearTimeout(timeoutId);
+  }, 200);
+};
+
+const checkSecuencie = () => {
+  let sequencieMatches = true;
+  for (let index = 0; index < playerSequecie.length; index++) {
+    sequencieMatches = playerSequecie[index] === sequencie[index];
   }
-  intervalId = setInterval(() => {
-    currentChildren.classList.toggle(`${currentChildren.dataset.color}--active`);
-    pulses++;
-    if (pulses === 2) {
-      clearInterval(intervalId);
-      playerTurn = true;
-    }
-  }, sequencieTime);
+  return sequencieMatches;
+};
+
+const checkRoundFinished = () => {
+  const roundFinished = areArraysEqual(sequencie, playerSequecie);
+  if (roundFinished) {
+    playerSequecie = [];
+    generateGameSequencie();
+    round++;
+    printRound();
+  }
 };
 
 const setSequenciePlayer = playerColor => {
-  if (playerColor === sequencie[playerSequecieCounter]) {
-    playerSequecie.push(playerColor);
-    activeButton(playerColor);
-    const sequencieFinished = areArraysEqual(sequencie, playerSequecie);
-    if (sequencieFinished) {
-      round++;
-      sequencieLength++;
-      printRound();
-      resetValues();
-      generateSequencie();
-    } else {
-      playerSequecieCounter++;
-    }
-  } else {
-    console.log('WRONG');
+  iluminateButton(playerColor);
+  playerSequecie.push(playerColor);
+  const isCorrect = checkSecuencie();
+  if (!isCorrect) {
+    console.log('END');
+    resetValues();
+    return;
   }
-  console.log(playerSequecie);
-  console.log(playerSequecieCounter);
+  checkRoundFinished();
 };
 
 const startSequencie = sequencie => {
@@ -94,30 +119,35 @@ const startSequencie = sequencie => {
   }
   let intervalSequencie = undefined;
   intervalSequencie = setInterval(() => {
-    activeButton(sequencie[sequencieCounter]);
+    iluminateButton(sequencie[sequencieCounter]);
     if (sequencieCounter >= sequencie.length - 1) {
       clearInterval(intervalSequencie);
       playerTurn = true;
     } else {
       sequencieCounter++;
     }
-  }, sequencieTime * 3);
+  }, sequencieTime);
 };
 
-const generateSequencie = () => {
-  for (let index = 0; index < sequencieLength; index++) {
-    const randomPosition = Math.floor(Math.random() * colors.length);
-    const currentColor = colors[randomPosition];
-    sequencie.push(currentColor);
-  }
-  startSequencie(sequencie);
+const generateGameSequencie = () => {
+  const randomPosition = Math.floor(Math.random() * colors.length);
+  const currentColor = colors[randomPosition];
+  sequencie.push(currentColor);
+  const timeoutId = setTimeout(() => {
+    startSequencie(sequencie);
+    clearTimeout(timeoutId);
+  }, 1000);
 };
-
-generateSequencie();
-printRound();
 
 simonContainerElement.addEventListener('click', event => {
   const playerColor = event.target.dataset.color;
   if (!playerTurn || !playerColor) return;
   setSequenciePlayer(playerColor);
+});
+
+buttonStartElement.addEventListener('click', () => {
+  printRound();
+  generateGameSequencie();
+  gameContainerElement.classList.add('show');
+  buttonStartElement.classList.remove('show');
 });

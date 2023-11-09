@@ -7,13 +7,20 @@
     <title>Document</title>
   </head>
   <body>
-    <h1>SIMON SAYS</h1>
-    <h2 id="round"></h2>
-    <div id="simon-container" class="simon-container">
-      <div class="simon-box yellow" data-color="yellow"></div>
-      <div class="simon-box blue" data-color="blue"></div>
-      <div class="simon-box red" data-color="red"></div>
-      <div class="simon-box green" data-color="green"></div>
+    <h1 class="title">SIMON SAYS</h1>
+    <button id="button-start" class="button show">START GAME</button>
+    <div id="game" class="game">
+      <h2 id="round" class="round"></h2>
+      <div id="simon-container" class="simon-container">
+        <div class="simon-box yellow" data-color="yellow"></div>
+        <audio id="note-do" src="./assets/do.wav"></audio>
+        <div class="simon-box blue" data-color="blue"></div>
+        <audio id="note-re" src="./assets/re.wav"></audio>
+        <div class="simon-box red" data-color="red"></div>
+        <audio id="note-mi" src="./assets/mi.wav"></audio>
+        <div class="simon-box green" data-color="green"></div>
+        <audio id="note-fa" src="./assets/fa.wav"></audio>
+      </div>
     </div>
     <script src="js/scripts.js"></script>
   </body>
