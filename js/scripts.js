@@ -1,11 +1,12 @@
 const simonContainerElement = document.getElementById('simon-container');
 const gameContainerElement = document.getElementById('game');
 const buttonStartElement = document.getElementById('button-start');
-const simonBoxesElements = document.querySelectorAll('.simon-box');
+const sequencieControlElement = document.getElementById('sequencie-control');
 const noteDoElement = document.getElementById('note-do');
 const noteReElement = document.getElementById('note-re');
 const noteMiElement = document.getElementById('note-mi');
 const noteFaElement = document.getElementById('note-fa');
+const simonBoxesElements = document.querySelectorAll('.simon-box');
 const roundElement = document.getElementById('round');
 const colors = ['yellow', 'blue', 'red', 'green'];
 
@@ -33,6 +34,8 @@ let sequencie = [];
 let playerSequecie = [];
 let sequencieTime = 500;
 let playerTurn = false;
+let currentPlayerColorPosition = 0;
+let level = 1;
 let round = 1;
 
 const areArraysEqual = (array1, array2) => {
@@ -60,6 +63,18 @@ const resetValues = () => {
   sequencie = [];
   playerSequecie = [];
   playerTurn = false;
+};
+
+const createControlBoxes = () => {
+  sequencieControlElement.innerHTML = '';
+  const fragment = document.createDocumentFragment();
+  sequencie.forEach(color => {
+    const newControlBox = document.createElement('div');
+    newControlBox.classList.add('control-box');
+    newControlBox.dataset.color = color;
+    fragment.append(newControlBox);
+  });
+  sequencieControlElement.append(fragment);
 };
 
 const printRound = () => {
@@ -101,6 +116,7 @@ const checkRoundFinished = () => {
 };
 
 const setSequenciePlayer = playerColor => {
+  console.log(currentPlayerColorPosition);
   iluminateButton(playerColor);
   playerSequecie.push(playerColor);
   const isCorrect = checkSecuencie();
@@ -109,6 +125,9 @@ const setSequenciePlayer = playerColor => {
     resetValues();
     return;
   }
+  const currentChildren = sequencieControlElement.children[currentPlayerColorPosition];
+  currentChildren.classList.add(`control-box--${currentChildren.dataset.color}`);
+  currentPlayerColorPosition++;
   checkRoundFinished();
 };
 
@@ -122,11 +141,13 @@ const startSequencie = sequencie => {
     iluminateButton(sequencie[sequencieCounter]);
     if (sequencieCounter >= sequencie.length - 1) {
       clearInterval(intervalSequencie);
+      createControlBoxes();
       playerTurn = true;
     } else {
       sequencieCounter++;
     }
   }, sequencieTime);
+  currentPlayerColorPosition = 0;
 };
 
 const generateGameSequencie = () => {

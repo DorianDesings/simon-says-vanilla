@@ -11,6 +11,7 @@
   --red-active: rgb(255, 0, 0);
   --green: darkgreen;
   --green-active: rgb(0, 255, 0);
+  --control-box: white;
   --button-color: ;
 }
 
@@ -37,10 +38,11 @@ body {
   display: grid;
   grid-template-columns: repeat(2, 50px);
   justify-content: center;
-  align-content: center;
+  align-content: start;
+  padding-top: 2rem;
   gap: 1rem;
   width: 100%;
-  height: 200px;
+  height: 300px;
   background-color: #212121;
 }
 
@@ -89,4 +91,34 @@ body {
 
 .show {
   display: block;
+}
+
+.sequencie-control {
+  display: grid;
+  grid-template-columns: repeat(10, 20px);
+  gap: 1rem;
+  width: 165px;
+  margin-left: -95px;
+}
+
+.control-box {
+  width: 20px;
+  height: 20px;
+  background-color: white;
+}
+
+.control-box--yellow {
+  background-color: var(--yellow);
+}
+
+.control-box--blue {
+  background-color: var(--blue);
+}
+
+.control-box--red {
+  background-color: var(--red);
+}
+
+.control-box--green {
+  background-color: var(--green);
 }
